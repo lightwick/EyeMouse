@@ -30,6 +30,7 @@ class MyDetector():
 
   def webcam(self, state, state_changed):
     COUNTER = 0
+    double_count = 0
     # TOTAL = 0
     # now_time = time.localtime().tm_sec + time.localtime().tm_min * 60 + time.localtime().tm_hour * 3600
     recent_blink = time.time()
@@ -100,20 +101,22 @@ class MyDetector():
         pred_l = model(eye_input_l)
         pred_r = model(eye_input_r)
 
-        print('r: ', pred_r[0])
-        print('l: ', pred_l[0])
+        # print('r: ', pred_r[0])
+        # print('l: ', pred_l[0])
         # visualize
         state_l = 'O %.1f' if pred_l > 0.1 else '- %.1f'
         state_r = 'O %.1f' if pred_r > 0.1 else '- %.1f'
         
         state_l = state_l % pred_l
         state_r = state_r % pred_r
-        '''
-        if state_r[0] == '-' and state_l[0] == '0':
+
+        
+        if state_r[0] == '-' and state_l[0] == 'O':
           print('left')
-        elif state_r[0] == '0' and state_l[0] == '-':
+          
+        if state_r[0] == 'O' and state_l[0] == '-':
           print('right')
-        '''
+        
         
         if state_r[0] == '-' and state_l[0] == '-':
           COUNTER += 1
@@ -130,7 +133,8 @@ class MyDetector():
             # print(elapsed_time)
             
             if elapsed_time<0.5:
-              print("double blink")
+              print("double blink ", double_count)
+              double_count = double_count + 1
 
             
             li = time_window(acc_time)
